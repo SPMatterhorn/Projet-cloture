@@ -47,6 +47,27 @@ NVI0                   [up/up]
 R1#
 ```
 
-# Routeur R4
+# Routeur R4 (Site distant LanR4)
 
 ## Adressage IPv4
+```
+R4#show ip int brief
+Interface                  IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0         unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/1         192.168.122.162 YES DHCP   up                    up
+GigabitEthernet0/2         10.104.1.1      YES NVRAM  up                    up
+GigabitEthernet0/3         unassigned      YES NVRAM  down                  down
+GigabitEthernet0/4         unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/5         unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/6         unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/7         unassigned      YES NVRAM  administratively down down
+NVI0                       unassigned      YES unset  up                    up
+R4#
+```
+## Adressage IPv6 Global Unicast site distant (interface G0/1 de R4)
+- Adresses des réseaux maîrisés, routé jusqu'à votre routeur externe : `2001:470:c814:5000::/52`
+- L'adresse IPv6 externe de votre routeur : `fe80::cafe:5`
+- L'adresse IPv6 de la passerelle vers l'Internet : `fe80::e53:21ff:fe38:5800`
+
+## Adressage IPv6
+
