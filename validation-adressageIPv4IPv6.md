@@ -17,9 +17,9 @@ R1#
 ```
 
 ## Adressage IPv6 Global Unicast site principal (interface G0/1 de R1)
-Adresses des réseaux maîrisés, routé jusqu'à votre routeur externe : `2001:470:c814:1000::/52`
-L'adresse IPv6 externe de votre routeur : `fe80::cafe:1`
-L'adresse IPv6 de la passerelle vers l'Internet : `fe80::e53:21ff:fe38:5800`
+- Adresses des réseaux maîtrisés, routé jusqu'à votre routeur externe : `2001:470:c814:1000::/52`
+- L'adresse IPv6 externe de votre routeur : `fe80::cafe:1`
+- L'adresse IPv6 de la passerelle vers l'Internet : `fe80::e53:21ff:fe38:5800`
 
 ## Adressage IPv6
 ```
@@ -47,3 +47,6 @@ NVI0                   [up/up]
 R1#
 ```
 
+# Routeur R4
+
+## Adressage IPv4
