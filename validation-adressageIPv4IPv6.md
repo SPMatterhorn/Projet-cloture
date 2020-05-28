@@ -79,6 +79,9 @@ R4(config-router)#passive-interface GigabitEthernet0/0
 R4(config-router)#eigrp router-id 4.4.4.4
 R4(config-router)#network 10.104.1.0 0.0.0.255
 R4(config-router)#redistribute static
+R4(config-router)#exit
+R4(config)#exit
+R4#wr
 ```
 ```
 ! Ajout de l'adresse IPv6 externe du routeur, type link-local
@@ -100,7 +103,7 @@ R4(config-if)#exit
 R4(config)#exit
 R4#wr
 ```
-### Configuration du routage IPv6
+### Configuration du routage IPv6 / Protocole propriétaire Cisco : eigrp
 ```
 ! Activation du routage IPv6
 R4#configure terminal
@@ -125,6 +128,8 @@ R4(config)#ipv6 route 2000::/3 GigabitEthernet0/1 FE80::E53:21FF:FE38:5800
 R4(config)#exit
 R4#wr
 ```
+### Diagnostics
+- Table de routage IPv6 de R4
 ```
 R4#show ipv6 route
 IPv6 Routing Table - default - 4 entries
@@ -147,6 +152,7 @@ L   FF00::/8 [0/0]
      via Null0, receive
 R4#
 ```
+- Ping depuis R4 vers google, domaine internet public (test connectivité IP et DNS)
 ```
 R4#ping 8.8.8.8
 Type escape sequence to abort.
@@ -155,8 +161,8 @@ Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 2/3/4 ms
 R4#
 ```
+- Ping depuis R4 vers google.com, domaine internet public (test connectivité IP et DNS)
 ```
-R4#
 R4#ping google.com
 Translating "google.com"...domain server (1.1.1.1) [OK]
 
@@ -166,6 +172,7 @@ Sending 5, 100-byte ICMP Echos to 2A00:1450:400E:80D::200E, timeout is 2 seconds
 Success rate is 100 percent (5/5), round-trip min/avg/max = 12/12/13 ms
 R4#
 ```
+- Ping depuis R4 vers test.tf
 ```
 R4#ping ipv6 test.tf
 Type escape sequence to abort.
@@ -173,6 +180,21 @@ Sending 5, 100-byte ICMP Echos to 2001:41D0:305:1000::1D8A, timeout is 2 seconds
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 7/8/13 ms
 R4#
+```
+- Ping depuis la station de travail PC9 du lanR4 vers google, NAT PAT overload opérationnel sur R4
+```
+root@PC9:~# ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=55 time=4.03 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=55 time=3.43 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=55 time=3.30 ms
+64 bytes from 8.8.8.8: icmp_seq=4 ttl=55 time=3.12 ms
+64 bytes from 8.8.8.8: icmp_seq=5 ttl=55 time=3.13 ms
+^C
+--- 8.8.8.8 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4006ms
+rtt min/avg/max/mdev = 3.129/3.405/4.032/0.339 ms
+root@PC9:~#
 ```
 
 
