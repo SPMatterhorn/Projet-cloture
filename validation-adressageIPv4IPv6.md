@@ -65,9 +65,30 @@ NVI0                       unassigned      YES unset  up                    up
 R4#
 ```
 ## Adressage IPv6 Global Unicast site distant (interface G0/1 de R4)
-- Adresses des réseaux maîrisés, routé jusqu'à votre routeur externe : `2001:470:c814:5000::/52`
+- Adresses des réseaux maîtrisés, routé jusqu'à votre routeur externe : `2001:470:c814:5000::/52`
 - L'adresse IPv6 externe de votre routeur : `fe80::cafe:5`
 - L'adresse IPv6 de la passerelle vers l'Internet : `fe80::e53:21ff:fe38:5800`
 
 ## Adressage IPv6
+```
+! Ajout de l'adresse IPv6 externe du routeur, type link-local
+R4#configure terminal
+R4(config)#interface G0/1
+R4(config-if)#ipv6 address fe80::cafe:5 link-local
+R4(config-if)#exit
+R4(config)#exit
+R4#wr
+! Bloc d'adresses IPv6 2000:470:c814:5004::0/64 pour lanR4
+R4#configure terminal
+R4(config)#interface G0/2
+R4(config-if)#ipv6 address 2001:470:c814:5004::2/64
+R4(config-if)#exit
+R4(config)#exit
+R4#wr
+! Activation du routage IPv6
+R4#configure terminal
+R4(config)#ipv6 unicast-routing
+R4(config-if)#exit
+R4#wr
+```
 
