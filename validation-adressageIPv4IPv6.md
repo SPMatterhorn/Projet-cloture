@@ -108,7 +108,7 @@ R4#wr
 ! Activation du routage IPv6
 R4#configure terminal
 R4(config)#ipv6 unicast-routing
-R4(config-if)#exit
+R4(config)#exit
 R4#wr
 ! Configuration du routage IPv6
 R4#configure terminal
@@ -197,4 +197,54 @@ rtt min/avg/max/mdev = 3.129/3.405/4.032/0.339 ms
 root@PC9:~#
 ```
 
-
+### Configuration du routage IPv4
+```
+!
+! Configuration du routage IPv4 / Protocole propriétaire Cisco : eigrp
+!
+configure terminal
+ router eigrp 1
+  passive-interface GigabitEthernet0/0
+  eigrp router-id 4.4.4.4
+  network 10.104.1.0 0.0.0.255
+  redistribute static
+  exit
+! Ajout de l'adresse IPv6 externe du routeur, type link-local
+ interface G0/1
+  ipv6 address fe80::cafe:5 link-local
+  exit
+! Bloc d'adresses IPv6 2000:470:c814:5004::0/64 pour lanR4
+ interface G0/2
+  ipv6 address 2001:470:c814:5004::2/64
+  ipv6 enable
+  exit
+ interface G0/0
+  ipv6 enable
+  exit
+ exit
+wr
+```
+### Configuration du routage IPv6 / Protocole propriétaire Cisco : eigrp
+```
+!
+! Configuration du routage IPv6 / Protocole propriétaire Cisco : eigrp
+!
+! Activation du routage IPv6
+configure terminal
+ ipv6 unicast-routing
+! Configuration du routage IPv6
+ ipv6 router eigrp 1
+  eigrp router-id 4.4.4.4
+  passive-interface GigabitEthernet0/0
+  redistribute static
+  exit
+ interface GigabitEthernet0/0
+  ipv6 eigrp 1
+  exit
+ interface GigabitEthernet0/2
+  ipv6 eigrp 1
+  exit
+! Route IPv6 statique de G0/1 vers l'adresse IPv6 de la passerelle vers l'internet
+ ipv6 route 2000::/3 GigabitEthernet0/1 FE80::E53:21FF:FE38:5800
+ exit
+wr
