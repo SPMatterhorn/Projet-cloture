@@ -51,3 +51,11 @@ interface vlan 40
 end
 wr
 ```
+- Modification Configuration des Machines Virtuelles Ubuntu
+```
+systemctl disable systemd-resolved
+systemctl stop systemd-resolved
+rm -f /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+chattr +i /etc/resolv.conf
+```
