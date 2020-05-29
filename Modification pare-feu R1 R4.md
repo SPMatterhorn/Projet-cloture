@@ -28,7 +28,7 @@ configure terminal
 wr
 ```
 
-# Sur R4
+## Sur R4
 - Permettre à R4 de pouvoir réaliser ses tests de connectivité et de résolution de nom
 ```
 ! ajout d'une nouvelle zone-pair de la self-zone vers l'internet
