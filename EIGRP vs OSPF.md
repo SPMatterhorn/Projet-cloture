@@ -1,102 +1,168 @@
-# Choix du protocole de routage
+# Pare-feu
 
-https://openclassrooms.com/fr/courses/2557196-administrez-une-architecture-reseau-avec-cisco/5135481-choisissez-entre-ospf-et-eigrp-pour-votre-topologie
+Notre projet est basé sur une infrastructure homogène Cisco, nous avons donc configuré un pare-feu ZBF Cisco sur le routeur R1 (réseau principal) et sur le routeur R4 (site distant R4). Toutefois, nous avons quand même configuré un pare-feu Fortinet sur le routeur R5 (site distant R5) afin d'appréhender le principe de gestion unifiée des menaces (UTM), même si nous avons déployé uniquement un pare-feu.
 
-https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/16406-eigrp-toc.html
+Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque noeud d'interconnexion entre notre réseau interne et l'extérieur (vers l'internet), doit inclure une fonctionnalité de pare-feu.  Par défaut, une fois les fonctionnalités du pare-feu activées, aucun trafic ne pourra entrer ni sortir de notre réseau, principe du moindre privilège. Suivant les politiques de sécurité retenues, le pare-feu va filtrer tout ou partie du trafic le traversant, en ne laissant passer que les types de paquets explicitement mentionés dans sa configuration (exceptions).
 
-https://cisco.goffinet.org/ccnp/eigrp/lab-routage-eigrp/
+Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT. Nous souhaitions en effet réutiliser un pare-feu Fortinet, acteur majeur du marché au même titre que Cisco.
 
-https://cisco.goffinet.org/ccna/ospf/lab-ospf-multi-area/
-
-OSPFv2 => routage en IPv4
-OSPFv3 => roputage en IPv6
-
-Recherche du plus court chemin sans boucle
-
-## EIGRP : Enhanced Interior Gateway Routing Protocol
-
-- Protocole de routage à vecteur de distance, propriétaire Cisco
-- Peut être utilisé par les autres constructeurs, mais seul Cisco peut le modifier
-- Protocole hybride qui peut réutiliser certaines fonctionnalités d'un protocole de routage à état de lien
-- Résout les problèmes de boucle
-- Route vers le plus court chemin + une route de secours 
-- Utilise la métrique en prenant en compte la bande passante et les délais, et nom les sauts (contrairement à RIP) => Hybride
-- Load balanching (répartition de charge), Bandes passantes égales ou inégales (deux câbles avec des capacités différentes)
-- Distance Administrative : 90, plus la distance est faible, plus le protocole est fiable, le protocole de routage avec la plus faible distance administrative est préféré pour alimenter les tables de routage.
-
-
-## OSPF
-- Protocole de routage à état de lien, issu d'une RFC de l'IETF
-
-|**EIGRP**|**OSPF**|
 |:-:|:-:|
-|Protocole de routage Hybride|Protocole de routage à état de lien |
-|Priopriétaire Cisco, Standard récent|Standard IETF|
-|Distance Administrative: 90|Distance Administrative: 110|
-|Route secondaire de secours|Pas de route secondaire|
-|Algorithme DUAL|Algorithme Dijkstra|
-|Système autonome|Division du réseau en aires|
+|Interface|Zone de Confiance|
+
+Cisco ZBF
+Zone-based policy firewall
+Le modèle de configuration Zone-based policy firewall (ZPF or ZBF or ZFW) a été introduit en 2006 avec l’IOS 12.4(6)T.
+
+Avec ZBF, les interfaces sont assignées à une des zones sur lesquelles une règle d’inspection du trafic (inspection policy) est appliquée. Elle vérifie le trafic qui transite entre les zones.
+
+Une règle par défaut bloque tout trafic tant qu’une règle explicite ne contredit pas ce comportement.
+
+ZBF supporte toutes les fonctionnalités Stateful Packet Inspection (SPI), filtrage des URLs et contre-mesure des DoS.
+
+Principes ZBF
+Une zone doit être configurée (créée) avant qu’une interface puisse en faire partie. Une interface ne peut être assignée qu’à une seule zone.
+
+Tout le trafic vers ou venant d’une interface donnée est bloqué quand elle est assignée à une zone sauf pour le trafic entre interfaces d’une même zone et pour le trafic du routeur lui-même (Self zone).
+
+Une politique de sécurité (zone-pair) peut contrôler le trafic entre deux zones en faisant référence à un en ensemble de règles (policy-map).
+
+Un policy-map prend des actions et fait référence à des critères de filtrage (class-maps).
+
+Quand du trafic passe d’une zone à une autre (zone-pair), un policy-map est appliqué.
+
+Pour chaque class-map (critère de filtrage) du policy-map, une action est prise : pass, inspect ou drop de manière séquentielle.
+
+Il est conseillé de travailler dans un éditeur de texte avant d’appliquer les règles du firewall.
+
+Trois actions sur les class-maps
+Inspect
+Met en place un pare-feu à état (équivalent à la commande ip inspect) SPI.
+
+Capable de suivre les protocoles comme ICMP ou FTP (avec de multiples connexions data et session)
+
+Pass
+Équivalent à l’action permit d’un ACL.
+
+Ne suit pas l’état des connexions ou des sessions.
+
+Nécessite une règle correspondante pour du trafic de retour.
+
+Drop
+Équivalent à l’action deny d’un ACL.
+
+Une option log est possible pour journaliser les paquets rejetés.
+
+Règles de filtrage : policy-maps
+Les actions Inspect, Pass et Drop ne peuvent être appliquées qu’entre des interfaces appartenant à des zones distinctes.
+
+La Self zone, la zone du routeur/parefeu comme source ou destination est une exception à ce refus implicite de tout. Tout le trafic vers n’importe quelle interface du routeur est autorisé jusqu’au moment où il est implicitement refusé.
+
+Les interfaces qui ne participent pas à ZBF fonctionnent comme des ports classiques et peuvent utiliser une configuration SPI/CBAC.
 
 
 
-Eigrp est plus fiable qu' Ospf
 
 
 
-## Couche Core (Tripod) 
-|Périphérique|Interface|Liaison<br>|Adresse IPv4 statique|Adresse<br>IPv6 Link-local|Adresse IPv6 publique|Adresse IPv6 privée|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|R1|G0/2|R1-R2|10.1.1.1|fe80::dd:1|2001:470:c814:1001::1|fd00:470:c814:1001::1|
-|R1|G0/3|R1-R3|10.1.2.1|fe80::dd:1|2001:470:c814:1002::1|fd00:470:c814:1002::1|
-|R2|G0/1|R2-R1|10.1.1.2|fe80::dd:2|2001:470:c814:1001::2|fd00:470:c814:1001::2|
-|R2|G0/3|R2-R3|10.1.3.2|fe80::dd:2|2001:470:c814:1003::2|fd00:470:c814:1003::2|
-|R3|G0/1|R3-R1|10.1.2.2|fe80::dd:3|2001:470:c814:1002::2|fd00:470:c814:1002::2|
-|R3|G0/2|R3-R2|10.1.3.1|fe80::dd:3|2001:470:c814:1003::1|fd00:470:c814:1003::1|
 
-OSPF
 
-EIGRP
 
-C’est un standard de l’IETF, il est donc présent sur la totalité des routeurs que vous rencontrerez.
 
-C’est devenu un standard depuis quelques années, mais il n’est pas encore présent sur tous les routeurs du marché.
 
-Distance administrative 110.
+# NAT
 
-Distance administrative 90.
+Notre bloc IPv4 10.0.0.0 /8 (Plage d'adresses privées de la Classe A, défini par le RFC 1918) n'est pas routable vers l'internet. 
+Nous devons utiliser le NAT "Network Address Translation" 
+R1, R4 et R5 gèrent aussi les fonctionnalités de NAT pour leurs réseaux respectifs. (Traduction d'adresses IPv4 privées en adresses IPv4 publiques ou privées, privées dans notre cas en raison du cas particulier de notre environnement GNS3). R1, R4 et R5 ne sont pas directement reliés à l'internet (domaine IPv4 publique), un réseau en IPv4 privé 
+La liste d'accès du NAT contribue indirectement à la politique de sécurité en autorisant tout ou partie de notre bloc d'adresses privées à joindre l'internet ou à être contacté par l'internet.
 
-À état de lien
 
-Hybride
 
-Load-balancing sur câble de même bande passante.
 
-Load-balancing sur câble de bande passante différente.
 
-Il ne possède pas de route secondaire.
 
-Il possède une route secondaire.
 
-Il peut diviser le réseau en aire pour limiter l’utilisation de la bande passante.
+L'infrastructure nécessite l'utilisation de Firewalls (pare-feu) en extrimité de réseau, afin de filtrer les trafics entrant et sortant. 
 
-Notion de système autonome
 
-Il sélectionne un routeur désigné.
+Ces derniers n'assurent pas la sécurité au sein même du réseau. Il est crucial de déterminer les flux autorisés nécessaires.
 
-Il envoie les messages à tous les routeurs.
+Le bloc principal suit architecture Core-Distribution-Access, dont le noeud d'interconnexion vers les réseaux extérieurs/étrangers (Zone de confiance 0%) se situe au niveau du routeur R1.
+Nous utilisons une infrastrucuture homogène Cisco par conséquent nous activons les fonctionalités firewall du pare-feu Cisco sur le routeur cisco R1.
 
-Métrique par le coût (la bande passante).
 
-Métrique par la bande passante et le délai (plus d’autres facteurs en option).
 
-Aucune notion de saut.
 
-Pas plus de 224 sauts.
 
-Algorithme de Dijkstra
+Quelques éléments essentiels sont à retenir concernant les pare-feux
 
-Algorithme DUAL
+Dans un système d’information, les politiques de filtrage et de contrôle du trafic sont placées sur un matériel ou un logiciel intermédiaire communément appelé pare-feu (firewall).
+Cet élément du réseau a pour fonction d’examiner et filtrer le trafic qui le traverse.
+On peut le considérer comme une fonctionnalité d’un réseau sécurisé : la fonctionnalité pare-feu
+L’idée qui prévaut à ce type de fonctionnalité est le contrôle des flux du réseau TCP/IP.
+Le pare-feu limite le taux de paquets et de connexions actives. Il reconnaît les flux applicatifs.
+Se placer au milieu du routage TCP/IP, il fait office de routeur
+Il agit au minimum au niveau de la couche 4 (L4) mais il peut inspecter du trafic L7 (Web Application Firewall)
+Il ne faut pas le confondre avec le routeur NAT
+2. Objectifs d’un pare-feu
+Il a pour objectifs de répondre aux menaces et attaques suivantes, de manière non-exhaustive :
 
-Un peu long à configurer au départ (c’est un avis personnel)
+Usurpation d’identité
+La manipulation d’informations
+Les attaques de déni de service (DoS/DDoS)
+Les attaques par code malicieux
+La fuite d’information
+Les accès non-autorisé (en vue d’élévation de privilège)
+Les attaques de reconnaissance, d’homme du milieu, l’exploitation de TCP/IP
+3. Ce que le pare-feu ne fait pas
+Le pare-feu est central dans une architecture sécurisée mais :
 
-Assez facile à configurer.
+Il ne protège pas des menaces internes.
+Il n’applique pas tout seul les politiques de sécurité et leur surveillance.
+Il n’établit pas la connectivité par défaut.
+Le filtrage peut intervenir à tous les niveaux TCP/IP de manière très fine.
+4. Fonctionnement
+Il a pour principale tâche de contrôler le trafic entre différentes zones de confiance, en filtrant les flux de données qui y transitent.
+Généralement, les zones de confiance incluent l’Internet (une zone dont la confiance est nulle) et au moins un réseau interne (une zone dont la confiance est plus importante).
+Le but est de fournir une connectivité contrôlée et maîtrisée entre des zones de différents niveaux de confiance, grâce à l’application de la politique de sécurité et d’un modèle de connexion basé sur le principe du moindre privilège.
+Un pare-feu fait souvent office de routeur et permet ainsi d’isoler le réseau en plusieurs zones de sécurité appelées zones démilitarisées ou DMZ. Ces zones sont séparées suivant le niveau de confiance qu’on leur porte.
+5. Zone de confiance sur un pare-feu
+Un organisation du réseau en zones composées d’interfaces permet d’abstraire les règles de filtrages.
+
+
+Zones de confiance
+À titre d’exemple, les politiques de filtrage des applications pourrait être facilement mis en oeuvre quelque soit le protocole de transport IPv4 ou IPv6.
+
+Aussi les politiques de sécurité appliquée sur les pare-feux sont alors plus lisibles, plus faciles à auditer et à gérer.
+
+6. Niveau de confiance
+Le niveau de confiance est la certitude que les utilisateurs vont respecter les politiques de sécurité de l’organisation.
+Ces politiques de sécurité sont édictées dans un document écrit de manière générale. Ces recommandations touchent tous les éléments de sécurité de l’organisation et sont traduites particulièrement sur les pare-feu en différentes règles de filtrage.
+On notera que le pare-feu n’examine que le trafic qui le traverse et ne protège en rien des attaques internes, notamment sur le LAN.
+7. Politiques de filtrage
+Selon les besoins, on placera les politiques de filtrage à différents endroits du réseau, au minimum sur chaque hôte contrôlé (pare-feu local) et en bordure du réseau administré sur le pare-feu. Ces emplacements peuvent être distribué dans la topologie selon sa complexité.
+Pour éviter qu’il ne devienne un point unique de rupture, on s’efforcera d’assurer la redondance des pare-feu. On placera plusieurs pare-feu dans l’architecture du réseau à des fins de contrôle au plus proche d’une zone ou pour répartir la charge.
+8. Filtrage
+La configuration d’un pare-feu consiste la plupart du temps en un ensemble de règles qui déterminent une action de rejet ou d’autorisation du trafic qui passe les interfaces du pare-feu en fonction de certains critères tels que :
+l’origine et la destination du trafic,
+des informations d’un protocole de couche 3 (IPv4, IPv6, ARP, etc.),
+des informations d’un protocole de couche 4 (ICMP, TCP, UDP, ESP, AH, etc.)
+et/ou des informations d’un protocole applicatif (HTTP, SMTP, DNS, etc.).
+
+
+https://cisco.goffinet.org/ccnp/filtrage/lab-pare-feu-cisco-ios-zbf-zone-based-firewall/
+
+
+
+
+
+
+
+
+
+
+
+À compléter (Stéphane ?)
+
+
+
