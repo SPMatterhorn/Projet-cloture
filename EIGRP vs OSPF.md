@@ -13,13 +13,34 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | dmz | g0/0 | - | à risque |
 | self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
 
-| **zone-pair** | **source**| **destination** | **policy-map/action** | **class-map/action** | **match class-map** |
-| :- | :- | :- | :- | :- | :- |
-| lan-internet | lan | internet | lan-internet-policy/inspect | internet-trafic-class/inspect | dns, http, https, icmp |
-| lan-dmz | lan | dmz | lan-dmz-policy/inspect | lan-dmz-class/inspect | http, https |
-| internet-dmz | internet | dmz | internet-dmz-policy/inspect | internet-dmz-class/inspect | http, https |
+| **zone-pair** | **source**| **destination** | **policy-map / action** | **class-map** |
+| :- | :- | :- | :- | :- |
+| lan-internet | lan | internet | lan-internet-policy / inspect | internet-trafic-class, default-class |
+| lan-dmz | lan | dmz | lan-dmz-policy / inspect | lan-dmz-class, default-class |
+| internet-dmz | internet | dmz | internet-dmz-policy / inspect | internet-dmz-class, default-class |
+| internet-self | internet | self | to-self-policy / inspect | remote-access-class, icmp-class, dhcp-class, dns-class, ntp-class, class-default |
+| self-internet | self | internet | to-self-policy / inspect | remote-access-class, icmp-class, dhcp-class, dns-class, ntp-class, class-default |
 
 
+
+| **class-map / action** | **match class-map** |
+| :- | :- |
+| internet-trafic-class / inspect| dns, http, https, icmp |
+| lan-dmz-class / inspect | http, https |
+| internet-dmz-class / inspect | http, https |
+
+ class type inspect remote-access-class
+  pass
+ class type inspect icmp-class
+  inspect
+ class type inspect dhcp-class
+  pass
+ class type inspect dns-class
+  pass
+ class type inspect ntp-class
+  pass
+ class class-default
+  drop log
 
 class-map type inspect match-any internet-trafic-class
  match protocol dns
