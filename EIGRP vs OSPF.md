@@ -17,6 +17,21 @@ https://openclassrooms.com/fr/courses/2557196-administrez-une-architecture-resea
 ## OSPF
 - Protocole de routage à état de lien, issu d'une RFC de l'IETF
 
+|**EIGRP|OSPF**|
+|:-:|:-:|
+|Protocole de routage Hybride|Protocole de routage à état de lien |
+|Priopriétaire Cisco, Standard récent|Standard IETF|
+|Distance Administrative: 90|Distance Administrative: 110|
+|Route secondaire de secours|Pas de route secondaire|
+|Algorithme DUAL|Algorithme Dijkstra|
+|Système autonome|Division du réseau en aires|
+
+
+
+Eigrp est plus fiable qu' Ospf
+
+
+
 ## Couche Core (Tripod) 
 |Périphérique|Interface|Liaison<br>|Adresse IPv4 statique|Adresse<br>IPv6 Link-local|Adresse IPv6 publique|Adresse IPv6 privée|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
