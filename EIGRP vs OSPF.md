@@ -6,7 +6,7 @@ Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque n
 
 Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT.
 
-__Règles sur R1__
+## Règles sur R1
 
 | **security zone** | **interface** | **zone-pair** | **Niveau de Confiance** |
 | :-| :- | :- | :-: |
@@ -36,14 +36,17 @@ __Règles sur R1__
 |  |  |  |  | ntp-class |
 |  |  |  |  | class-default |
 
-## Policy-map / Class-map / Protocols
-* 
-
-| **class-map / action** | **match class-map** |
-| :- | :- |
-| internet-trafic-class / inspect| dns, http, https, icmp |
-| lan-dmz-class / inspect | http, https |
-| internet-dmz-class / inspect | http, https |
+| **class-map/action** | **match protocol class-map** | **access-group** |
+|:-|:-|
+|internet-trafic-class/inspect|dns, http, https, icmp||
+|lan-dmz-class/inspect|http, https||
+|internet-dmz-class/inspect|http, https||
+|remote-access-class/inspect|| SSH |
+|icmp-class/inspect|| SSH |
+|dhcp-class/pass|| SSH |
+|dns-class/pass|| SSH |
+|ntp-class/pass|| SSH |
+|class-default/drop log|| SSH |
 
  class type inspect remote-access-class
   pass
