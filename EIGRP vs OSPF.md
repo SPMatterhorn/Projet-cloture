@@ -6,12 +6,43 @@ Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque n
 
 Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT. Nous souhaitions en effet réutiliser un pare-feu Fortinet, acteur majeur du marché au même titre que Cisco.
 
-| **Zone de Confiance** | **Interfaces** | **Zone-pair** | **Niveau de Confiance** |
+| **security zone** | **interface** | **zone-pair** | **Niveau de Confiance** |
 | :-| :- | :- | :-: |
 | internet | g0/1 | internet-dmz, internet-self | 0% |
 | lan | g0/2, g0/3 | lan-internet, lan-dmz | 100% |
-| dmz       |     g0/0      | - | à risque |
-| self-zone | all | self-internet, internet-self | Firewall |
+| dmz | g0/0 | - | à risque |
+| self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
+
+| **zone-pair** | **source**| **destination** | **policy-map/action** | **class-map/action** | **match class-map** |
+| :- | :- | :- | :- | :- | :- |
+| lan-internet | lan | internet | lan-internet-policy/inspect | internet-trafic-class/inspect | dns, http, https, icmp |
+| lan-dmz | lan | dmz | lan-dmz-policy/inspect | lan-dmz-class/inspect | http, https |
+| internet-dmz | internet | dmz | internet-dmz-policy/inspect | internet-dmz-class/inspect | http, https |
+
+
+
+class-map type inspect match-any internet-trafic-class
+ match protocol dns
+ match protocol http
+ match protocol https
+ match protocol icmp
+ match protocol ssh
+
+| lan-dmz | lan | dmz | lan-dmz-policy | internet-trafic-class/inspect |
+
+zone security lan
+zone security internet
+zone security dmz
+zone-pair security lan-internet source lan destination internet
+ service-policy type inspect lan-internet-policy
+zone-pair security lan-dmz source lan destination dmz
+ service-policy type inspect lan-dmz-policy
+zone-pair security internet-dmz source internet destination dmz
+ service-policy type inspect internet-dmz-policy
+zone-pair security internet-self source internet destination self
+ service-policy type inspect to-self-policy
+zone-pair security self-internet source self destination internet
+ service-policy type inspect to-self-policy
 
 
 Cisco ZBF
