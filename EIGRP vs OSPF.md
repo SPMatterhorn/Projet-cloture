@@ -2,9 +2,11 @@
 
 Notre projet est basé sur une infrastructure homogène Cisco, nous avons donc configuré un pare-feu ZBF Cisco sur le routeur R1 (réseau principal) et sur le routeur R4 (site distant R4). Toutefois, nous avons quand même configuré un pare-feu Fortinet sur le routeur R5 (site distant R5) afin d'appréhender le principe de gestion unifiée des menaces (UTM), même si nous avons déployé uniquement un pare-feu.
 
-Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque noeud d'interconnexion entre notre réseau interne et l'extérieur (vers l'internet), doit inclure une fonctionnalité de pare-feu.  Par défaut, une fois les fonctionnalités du pare-feu activées, aucun trafic ne pourra entrer ni sortir de notre réseau, principe du moindre privilège. Suivant les politiques de sécurité retenues, le pare-feu va filtrer tout ou partie du trafic le traversant, en ne laissant passer que les types de paquets explicitement mentionés dans sa configuration (exceptions).
+Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque noeud d'interconnexion entre notre réseau interne et l'extérieur (vers l'internet ou un réseau étranger), doit inclure une fonctionnalité de pare-feu.  Par défaut, une fois les fonctionnalités du pare-feu activées, aucun trafic ne pourra entrer ni sortir de notre réseau, principe du moindre privilège. Suivant les politiques de sécurité retenues, le pare-feu va filtrer tout ou partie du trafic le traversant, en ne laissant passer que les types de paquets explicitement mentionés dans sa configuration.
 
 Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT.
+
+Le ZBF Cisco nécessite de définir des zones de sécurité et de mettre en place des politiques de sécurité ciblées afin d'autoriser uniquement les flux de données nécessaires. Les politiques de sécurité sont à adapter suivant les topologies et les besoins (présence d'une dmz, ...).
 
 ## Règles sur R1
 
