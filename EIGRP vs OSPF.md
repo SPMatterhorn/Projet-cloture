@@ -6,13 +6,13 @@ Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque n
 
 Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT. Nous souhaitions en effet réutiliser un pare-feu Fortinet, acteur majeur du marché au même titre que Cisco.
 
-| Zone de Confiance | Interface | Zone pair |
-| :------------ | :-------------: | -------------: |
-| Internet     |     Colonne     |        Colonne |
-| Self-Zone   |   Alignée au    |      Alignée à |
-| lan       |     Centre      |         Droite |
-|:-:|:-:|
-|Interface|Zone de Confiance|
+| **Zone de Confiance** | **Interfaces** | **Zone-pair** |
+| :-| :-: | :- |
+| internet | g0/1 | internet-dmz | 
+| lan | g0/2, g0/3 | lan-internet, lan-dmz |
+| dmz       |     g0/0      |         Droite |
+| self-zone | all | self-internet, internet-self |
+
 
 Cisco ZBF
 Zone-based policy firewall
