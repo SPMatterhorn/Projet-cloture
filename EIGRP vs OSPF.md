@@ -40,7 +40,7 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | :- | :- | :- | :- |
 | lan-internet-policy (*inspect*) | internet-trafic-class (*inspect*) | dns, http, https, icmp | |
 | | class-default | | |
-| lan-dmz-policy (*inspect*) | lan-dmz-class(*inspect*) | http, https | |
+| lan-dmz-policy (*inspect*) | lan-dmz-class (*inspect*) | http, https | |
 | | class-default | | |
 | internet-dmz-policy (*inspect*) | internet-dmz-class (*inspect*) | http, https | |
 | | class-default | | |
