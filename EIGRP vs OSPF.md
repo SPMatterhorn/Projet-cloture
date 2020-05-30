@@ -36,6 +36,28 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 |  |  |  |  | ntp-class |
 |  |  |  |  | class-default |
 
+| **policy-map/action** | **class-map/action** | **match protocol class-map** | **access-group** |
+| :- | :- | :- | :- |
+| lan-internet-policy/inspect | internet-trafic-class/inspect | dns, http, https, icmp | |
+| | class-default | | |
+| lan-dmz-policy/inspect | lan-dmz-class/inspect | http, https | |
+| | class-default | | |
+| internet-dmz-policy/inspect | internet-dmz-class/inspect | http, https | |
+| | class-default | | |
+| to-self-policy/inspect | remote-access-class | | SSH |
+| | icmp-class/inspect | icmp | |
+| | dhcp-class/pass | | DHCP |
+| | dns-class/pass | | DNS |
+| | ntp-class/pass | ntp | |
+| | class-default/drop log | | |
+| self-internet | self | internet | to-self-policy/inspect | remote-access-class |
+|  |  |  |  | icmp-class |
+|  |  |  |  | dhcp-class |
+|  |  |  |  | dns-class |
+|  |  |  |  | ntp-class |
+|  |  |  |  | class-default |
+
+
 | **class-map/action** | **match protocol class-map** | **access-group** |
 |:-|:-|
 |internet-trafic-class/inspect|dns, http, https, icmp||
