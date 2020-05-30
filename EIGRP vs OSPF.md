@@ -2,6 +2,17 @@
 
 https://openclassrooms.com/fr/courses/2557196-administrez-une-architecture-reseau-avec-cisco/5135481-choisissez-entre-ospf-et-eigrp-pour-votre-topologie
 
+https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/16406-eigrp-toc.html
+
+https://cisco.goffinet.org/ccnp/eigrp/lab-routage-eigrp/
+
+https://cisco.goffinet.org/ccna/ospf/lab-ospf-multi-area/
+
+OSPFv2 => routage en IPv4
+OSPFv3 => roputage en IPv6
+
+Recherche du plus court chemin sans boucle
+
 ## EIGRP : Enhanced Interior Gateway Routing Protocol
 
 - Protocole de routage à vecteur de distance, propriétaire Cisco
@@ -17,7 +28,7 @@ https://openclassrooms.com/fr/courses/2557196-administrez-une-architecture-resea
 ## OSPF
 - Protocole de routage à état de lien, issu d'une RFC de l'IETF
 
-|**EIGRP|OSPF**|
+|**EIGRP**|**OSPF**|
 |:-:|:-:|
 |Protocole de routage Hybride|Protocole de routage à état de lien |
 |Priopriétaire Cisco, Standard récent|Standard IETF|
