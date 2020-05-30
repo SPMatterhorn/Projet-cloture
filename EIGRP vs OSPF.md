@@ -15,21 +15,21 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | dmz | g0/0 | - | à risque |
 | self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
  
-| **zone-pair** | **source**| **destination** | **policy-map/action** | **class-map** |
+| **zone-pair** | **source**| **destination** | **policy-map** | **class-map** |
 | :- | :- | :- | :- | :- |
-| lan-internet | lan | internet | lan-internet-policy/inspect | internet-trafic-class |
+| lan-internet | lan | internet | lan-internet-policy | internet-trafic-class |
 |  |  |  |  | class-default |
-| lan-dmz | lan | dmz | lan-dmz-policy/inspect | lan-dmz-class |
+| lan-dmz | lan | dmz | lan-dmz-policy | lan-dmz-class |
 |  |  |  |  | class-default |
-| internet-dmz | internet | dmz | internet-dmz-policy/inspect | internet-dmz-class |
+| internet-dmz | internet | dmz | internet-dmz-policy | internet-dmz-class |
 |  |  |  |  | class-default |
-| internet-self | internet | self | to-self-policy/inspect | remote-access-class |
+| internet-self | internet | self | to-self-policy | remote-access-class |
 |  |  |  |  | icmp-class |
 |  |  |  |  | dhcp-class |
 |  |  |  |  | dns-class |
 |  |  |  |  | ntp-class |
 |  |  |  |  | class-default |
-| self-internet | self | internet | to-self-policy/inspect | remote-access-class |
+| self-internet | self | internet | to-self-policy | remote-access-class |
 |  |  |  |  | icmp-class |
 |  |  |  |  | dhcp-class |
 |  |  |  |  | dns-class |
