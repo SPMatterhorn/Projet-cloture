@@ -5,8 +5,6 @@ Notre projet est basé sur une infrastructure homogène Cisco, nous avons donc c
 Le pare-feu est un composant fondamental de la sécurité des réseaux. Chaque noeud d'interconnexion entre notre réseau interne et l'extérieur (vers l'internet), doit inclure une fonctionnalité de pare-feu.  Par défaut, une fois les fonctionnalités du pare-feu activées, aucun trafic ne pourra entrer ni sortir de notre réseau, principe du moindre privilège. Suivant les politiques de sécurité retenues, le pare-feu va filtrer tout ou partie du trafic le traversant, en ne laissant passer que les types de paquets explicitement mentionés dans sa configuration (exceptions).
 
 Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R4 (site distant) et R5 (site distant). On active les fonctionnalités de pare-feu Cisco sur les routeurs R1 et R4. R5 est un pare-feu Fortinet incluant des fonctionnalités de routage et de NAT.
-
-<center>
  
 | **security zone** | **interface** | **zone-pair** | **Niveau de Confiance** |
 | :-| :- | :- | :-: |
@@ -14,10 +12,6 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | lan | g0/2, g0/3 | lan-internet, lan-dmz | 100% |
 | dmz | g0/0 | - | à risque |
 | self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
-
-</center>
- 
-<center>
  
 | **zone-pair** | **source**| **destination** | **policy-map/action** | **class-map** |
 | :- | :- | :- | :- | :- |
@@ -39,8 +33,6 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 |  |  |  |  | dns-class |
 |  |  |  |  | ntp-class |
 |  |  |  |  | class-default |
-
-</center>
 
 ## Policy-map / Class-map / Protocols
 * 
