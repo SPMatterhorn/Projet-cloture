@@ -15,6 +15,31 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | dmz | g0/0 | - | à risque |
 | self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
  
+| **zone-pair** | **source**| **destination** | **policy-map** |
+| :- | :- | :- | :- |
+| lan-internet | lan | internet | lan-internet-policy |
+| lan-dmz | lan | dmz | lan-dmz-policy |
+| internet-dmz | internet | dmz | internet-dmz-policy |
+| internet-self | internet | self | to-self-policy |
+| self-internet | self | internet | to-self-policy |
+
+
+| **policy-map (*action*)** | **class-map (*action*)** | **match protocol class-map** | **access-group** |
+| :- | :- | :- | :- |
+| lan-internet-policy (*inspect*) | internet-trafic-class (*inspect*) | dns, http, https, icmp | |
+| | class-default | | |
+| lan-dmz-policy (*inspect*) | lan-dmz-class (*inspect*) | http, https | |
+| | class-default | | |
+| internet-dmz-policy (*inspect*) | internet-dmz-class (*inspect*) | http, https | |
+| | class-default | | |
+| to-self-policy (*inspect*) | remote-access-class (*inspect*) | | SSH |
+| | icmp-class (*inspect*) | icmp | |
+| | dhcp-class (*pass*) | | DHCP |
+| | dns-class (*pass*) | | DNS |
+| | ntp-class (*pass*) | ntp | |
+| | class-default (*drop log*) | | |
+
+
 | **zone-pair** | **source**| **destination** | **policy-map** | **class-map** |
 | :- | :- | :- | :- | :- |
 | lan-internet | lan | internet | lan-internet-policy | internet-trafic-class |
@@ -35,23 +60,6 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 |  |  |  |  | dns-class |
 |  |  |  |  | ntp-class |
 |  |  |  |  | class-default |
-
-| **policy-map (*action*)** | **class-map (*action*)** | **match protocol class-map** | **access-group** |
-| :- | :- | :- | :- |
-| lan-internet-policy (*inspect*) | internet-trafic-class (*inspect*) | dns, http, https, icmp | |
-| | class-default | | |
-| lan-dmz-policy (*inspect*) | lan-dmz-class (*inspect*) | http, https | |
-| | class-default | | |
-| internet-dmz-policy (*inspect*) | internet-dmz-class (*inspect*) | http, https | |
-| | class-default | | |
-| to-self-policy (*inspect*) | remote-access-class (*inspect*) | | SSH |
-| | icmp-class (*inspect*) | icmp | |
-| | dhcp-class (*pass*) | | DHCP |
-| | dns-class (*pass*) | | DNS |
-| | ntp-class (*pass*) | ntp | |
-| | class-default (*drop log*) | | |
-
-
 
  class type inspect remote-access-class
   pass
