@@ -50,25 +50,8 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | | dns-class/pass | | DNS |
 | | ntp-class/pass | ntp | |
 | | class-default/drop log | | |
-| self-internet | self | internet | to-self-policy/inspect | remote-access-class |
-|  |  |  |  | icmp-class |
-|  |  |  |  | dhcp-class |
-|  |  |  |  | dns-class |
-|  |  |  |  | ntp-class |
-|  |  |  |  | class-default |
 
 
-| **class-map/action** | **match protocol class-map** | **access-group** |
-|:-|:-|
-|internet-trafic-class/inspect|dns, http, https, icmp||
-|lan-dmz-class/inspect|http, https||
-|internet-dmz-class/inspect|http, https||
-|remote-access-class/inspect|| SSH |
-|icmp-class/inspect|| SSH |
-|dhcp-class/pass|| SSH |
-|dns-class/pass|| SSH |
-|ntp-class/pass|| SSH |
-|class-default/drop log|| SSH |
 
  class type inspect remote-access-class
   pass
