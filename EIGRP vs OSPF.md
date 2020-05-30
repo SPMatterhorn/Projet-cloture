@@ -14,8 +14,9 @@ Dans notre cas, ces noeuds se situent aux emplacements de R1 (site principal), R
 | self-zone | all | self-internet, internet-self | Firewall ZBF R1 |
 
 | **zone-pair** | **source**| **destination** | **policy-map/action** | **class-map** |
-| :---------------- | :- | :- | :- | :- |
+| :- | :- | :- | :- | :- |
 | lan-internet | lan | internet | lan-internet-policy/inspect | internet-trafic-class, default-class |
+|  |  |  |  | default-class |
 | lan-dmz | lan | dmz | lan-dmz-policy / inspect | lan-dmz-class, default-class |
 | internet-dmz | internet | dmz | internet-dmz-policy/inspect | internet-dmz-class, default-class |
 | internet-self | internet | self | to-self-policy/inspect | remote-access-class, icmp-class, dhcp-class, dns-class, ntp-class, class-default |
